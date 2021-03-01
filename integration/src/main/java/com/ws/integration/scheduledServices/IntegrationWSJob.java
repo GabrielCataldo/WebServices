@@ -44,7 +44,7 @@ public class IntegrationWSJob implements ICallbackAPI<List<PedidoVO>>{
 	
 	private int codeErrorSend = 0;
 	
-    @Scheduled(fixedDelay = 60000, zone = "America/Sao_Paulo") 
+    @Scheduled(fixedDelay = 60000 * 10, zone = "America/Sao_Paulo") 
 	public void trasferRequests() throws Exception {
     	System.out.println("LOG-PROJECT: ------ Transferindo (" + new SimpleDateFormat("dd/MM/yyyy hh:ss").format(Calendar.getInstance().getTime()) + ") ------");
     	
