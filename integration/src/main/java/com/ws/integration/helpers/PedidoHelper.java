@@ -56,9 +56,7 @@ public class PedidoHelper {
 					for (Map.Entry<String, List<ControlPedidoTransfer>> entry : listAllPedidosTransf.entrySet()) {
 						
 						List<ControlPedidoTransfer> listControlPedidoTransferValue = entry.getValue();
-						
-						System.out.println("listControlPedidoTransferValue -> " + new Gson().toJson(listControlPedidoTransferValue));
-						
+												
 						//abrimos todos os pedidos transferidos esse dia 
 						for(int position = 0; position < listControlPedidoTransferValue.size(); position++) {
 							
@@ -119,9 +117,7 @@ public class PedidoHelper {
 		public void saveNewJSON(@NonNull List<PedidoVO> listPedidosVO) {
 			String currentData = new SimpleDateFormat("dd/MM/yyyy").format(Calendar.getInstance().getTime());
 			HashMap<String, List<ControlPedidoTransfer>> listControlPedidoTransfer = getAllPedidosTransf();
-			
-			System.out.println("listControlPedidoTransfer -> "+ new Gson().toJson(listControlPedidoTransfer));
-			
+						
 			if (listControlPedidoTransfer != null && !listControlPedidoTransfer.isEmpty()) {
 				
 				for (Map.Entry<String, List<ControlPedidoTransfer>> entry : listControlPedidoTransfer.entrySet()) {
@@ -194,11 +190,7 @@ public class PedidoHelper {
 			try {
 				
 				file = getFileFromServer(TODOS_PEDIDOS_TRANSF_PATH);
-				 
-				//File is found
-				System.out.println("File Found : " + file.exists());
-				System.out.println("Save file -> " + new Gson().toJson(listControlPedidoTransfer));
-								
+				 				
 				fileWrite = new FileWriter(file);
 				fileWrite.write(new Gson().toJson(listControlPedidoTransfer));
 				
@@ -212,7 +204,6 @@ public class PedidoHelper {
 					try {
 						fileWrite.flush();
 						fileWrite.close();
-						System.out.println("close file: " + file.getAbsolutePath());
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -223,16 +214,8 @@ public class PedidoHelper {
 		}
 		
 	    private File getFileFromServer(String fileName){
-
-	    	System.out.println(" fileName  -> "+ fileName);
-	    	//URL in = PedidoHelper.BuilderControlTransfer.class.getClassLoader().getResource(fileName);
-	    	
-	    	//System.out.println(in != null);
-	    	 
 	    	File file = new File(fileName);
-		
-	    	System.out.println("file validation: " + (file != null && file.exists()));
-	    	
+			    	
 			if (file != null && file.exists()) {
 				return file;
 			}

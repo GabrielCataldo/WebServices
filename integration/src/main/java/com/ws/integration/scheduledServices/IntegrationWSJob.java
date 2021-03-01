@@ -10,7 +10,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.google.gson.Gson;
 import com.ws.integration.entities.enums.EStatusPedidoTransfer;
 import com.ws.integration.entities.pedidoDB.PedidoDB;
 import com.ws.integration.entities.pedidoVO.PedidoVO;
@@ -47,7 +46,7 @@ public class IntegrationWSJob implements ICallbackAPI<List<PedidoVO>>{
 	
     @Scheduled(fixedDelay = 60000, zone = "America/Sao_Paulo") 
 	public void trasferRequests() throws Exception {
-    	System.out.println("trasferRequests > rodou as " + new SimpleDateFormat("dd/MM/yyyy HH:ss").format(Calendar.getInstance().getTime()));
+    	System.out.println("LOG-PROJECT: ------ Transferindo (" + new SimpleDateFormat("dd/MM/yyyy hh:ss").format(Calendar.getInstance().getTime()) + ") ------");
     	
     	setupHelpers();
     	
@@ -59,7 +58,7 @@ public class IntegrationWSJob implements ICallbackAPI<List<PedidoVO>>{
     	calendarFinal.set(Calendar.HOUR_OF_DAY, 23);
     	calendarFinal.set(Calendar.MINUTE, 59);
     	
-    	System.out.println("call -> "+ ORIGEM_URL + "WS/Pedido");
+    	System.out.println("LOG-PROJECT: GET -> "+ ORIGEM_URL + "WS/Pedido");
     	pedidoRequestBuilderBuscar.pedidos(calendarInicial.getTime(), calendarFinal.getTime(), this);
     	
 	}
@@ -76,14 +75,14 @@ public class IntegrationWSJob implements ICallbackAPI<List<PedidoVO>>{
    
     	List<PedidoDB> listPedidosDB = pedidoHelperBuilderList.prepareToSender();
     	
-    	System.out.println("call -> "+ DESTINO_URL + "v1/pedido");
+    	System.out.println("LOG-PROJECT: POST -> "+ DESTINO_URL + "v1/pedido");
     	
     	for (PedidoDB pedidoDB : listPedidosDB) {
     		
     		pedidoRequestBuilderSend.pedidos(pedidoDB, new ICallbackAPI<Void>() {
 				@Override
 				public void onSuccessResponse(Response<Void> response) {
-					System.out.println("POST response -> "+ response.code());
+					System.out.println("LOG-PROJECT: POST response -> "+ response.code());
 					
 					for (PedidoVO pedidoVO : listPedidosVO) {
 						if(pedidoVO.getNumero().equals(pedidoDB.getNumero()))
@@ -99,7 +98,7 @@ public class IntegrationWSJob implements ICallbackAPI<List<PedidoVO>>{
 				public void onFailureResponse(Call<Void> call, Throwable t) {
 					if(t != null) {
 						t.printStackTrace();
-						System.out.println("POST response erro -> "+ t.getMessage());
+						System.out.println("LOG-PROJECT: POST response error -> "+ t.getMessage());
 					}
 										
 					for (PedidoVO pedidoVO : listPedidosVO) {
@@ -118,13 +117,12 @@ public class IntegrationWSJob implements ICallbackAPI<List<PedidoVO>>{
     	
     	if (codeErrorSend != 0) 
 			//todo aqui enviamos os erros que estão acontecendo
-    		new EmailClientHelper.Builder().sendEmailException(new Exception("Error code: " + codeErrorSend));
-    	
+    		new EmailClientHelper.Builder().sendEmailException(new Exception("POST Error code: " + codeErrorSend));
+    	    	
     }
     
 	@Override
 	public void onSuccessResponse(Response<List<PedidoVO>> response) {
-		System.out.println("response -> "+ new Gson().toJson(response.body()));
 		dataTransfer(response.body());
 	}
 
@@ -132,10 +130,6 @@ public class IntegrationWSJob implements ICallbackAPI<List<PedidoVO>>{
 	public void onFailureResponse(Call<List<PedidoVO>> call, Throwable t) {
 		if(t != null) {
 			t.printStackTrace();
-			System.out.println("onFailureResponse -> "+ t.getMessage());
 		}
 	}
-	
-	
-
 }

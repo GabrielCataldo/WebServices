@@ -4,7 +4,6 @@ import java.net.HttpURLConnection;
 
 import org.springframework.lang.Nullable;
 
-import com.google.gson.Gson;
 import com.ws.integration.helpers.EmailClientHelper;
 import com.ws.integration.interfaces.ICallbackAPI;
 
@@ -31,8 +30,6 @@ public abstract class BaseCallBackAPI<T> implements Callback<T> {
     @Override
     public void onResponse(Call<T> call, Response<T> response) {
         int responseCode = response.code();
-        System.out.println("TEST onResponse: responseCode -> " + responseCode);
-        System.out.println("TEST onResponse: responseBody -> " + new Gson().toJson(response.body()));
 
         if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED) {
             setOnSuccessResponse(response);
@@ -42,13 +39,13 @@ public abstract class BaseCallBackAPI<T> implements Callback<T> {
         	//todo: aqui enviamos o email de erro
         	new EmailClientHelper.Builder().sendEmailException(new Exception("Error code: " + responseCode));
 
-        System.out.println("TEST onResponse: error -> " + new Gson().toJson(response.errorBody()));
         setOnFailureResponse(call, null);
     }
 
     @Override
     public void onFailure(Call<T> call, Throwable t) {
-    	System.out.println("TEST onFailure:  t -> " + t.getMessage());
+    	if(t != null) 
+    		t.printStackTrace();
     	
     	if (sendAlertToEmail) 
     		new EmailClientHelper.Builder().sendEmailException(new Exception(t));

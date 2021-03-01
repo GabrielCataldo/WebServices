@@ -50,8 +50,6 @@ public class EmailClientHelper {
 		}
 		
 		public void sendEmail(@NonNull String mensagemEmail) {
-		
-			System.out.println("sendEmail to: "+toEmail);
 			Session session = createSessionEmail();
 			
 			//create message using session
@@ -63,11 +61,9 @@ public class EmailClientHelper {
 				
 				//sending message
 				Transport.send(message);
-				
-				System.out.println("Send Sucess!");
-				  
+								  
 			} catch (MessagingException e) {
-				System.out.println("Not Send Email: ERROR \n\n"+e.getMessage());
+				e.printStackTrace();
 			}
 			
 	
@@ -97,13 +93,10 @@ public class EmailClientHelper {
 
 				prepareEmailMessage(message, toEmail, title, messageEmail);
 				
-				//sending message
 				Transport.send(message);
-				
-				//System.out.println("Send Exception Sucess!");
-				  
+								  
 			} catch (MessagingException e2) {
-				//System.out.println("Not Send Email Exception: ERROR \n\n"+e2.getMessage());
+				e2.printStackTrace();
 			}  
 		}
 

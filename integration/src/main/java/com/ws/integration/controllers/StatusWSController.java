@@ -12,7 +12,7 @@ public class StatusWSController {
 	
 	@GetMapping("/ws/status/verification")
 	public String verification() {
-		return "API active in server";
+		return "WS active in server";
 	}
 
 }

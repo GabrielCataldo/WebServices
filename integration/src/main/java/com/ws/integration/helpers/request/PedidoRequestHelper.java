@@ -7,7 +7,6 @@ import java.util.List;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
-import com.google.gson.Gson;
 import com.ws.integration.entities.pedidoDB.PedidoDB;
 import com.ws.integration.entities.pedidoVO.PedidoVO;
 import com.ws.integration.helpers.RetrofitHelper;
@@ -47,9 +46,6 @@ public class PedidoRequestHelper {
 			String dataIncialFormat = simpleDateFormat.format(dataInicial);
 			String dataFinalFormat = simpleDateFormat.format(dataFinal);
 			
-			System.out.println("dataIncialFormat -> "+ dataIncialFormat);
-			System.out.println("dataFinalFormat -> "+ dataFinalFormat);
-			
             IRequestsIntegration iRequestsIntegration = retrofit.create(IRequestsIntegration.class);
             Call<List<PedidoVO>> call = iRequestsIntegration.buscarPedidos(dataIncialFormat, dataFinalFormat);
             call.enqueue(this);
@@ -76,7 +72,6 @@ public class PedidoRequestHelper {
 				return;
 			}		
 			
-			System.out.println("send pedidoDB -> " + new Gson().toJson(pedidoDB));
             IRequestsIntegration iRequestsIntegration = retrofit.create(IRequestsIntegration.class);
             Call<Void> call = iRequestsIntegration.salvarPedidos(pedidoDB);
             call.enqueue(this);
